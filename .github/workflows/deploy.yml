@@ -1,0 +1,51 @@
+name: Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            # Load NVM and profiles to ensure npm/node are in PATH
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            source ~/.bashrc || source ~/.profile || true
+
+            REPO_URL="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+            PROJECT_DIR="$HOME/hr-trrip"
+
+            # Check if project directory exists
+            if [ ! -d "$PROJECT_DIR" ]; then
+              echo "Project directory not found. Cloning repository..."
+              git clone $REPO_URL $PROJECT_DIR
+              cd $PROJECT_DIR
+            else
+              echo "Project directory exists. Updating code..."
+              cd $PROJECT_DIR
+              git remote set-url origin $REPO_URL
+              git pull origin main
+            fi
+            
+            # Install dependencies
+            npm install
+            
+            # Build the project (compiles TypeScript to JavaScript in dist/)
+            npm run build
+            
+            # Turn off existing pm2 instances if any and start new build
+            pm2 delete hr-trrip || true
+            pm2 start dist/index.js --name hr-trrip
