@@ -145,3 +145,23 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
         res.status(401).json({ status: "failure", message: "Unauthorized: Invalid or expired refresh token" });
     }
 };
+
+export const logout = async (req: Request, res: Response): Promise<void> => {
+    console.log(" => [CONTROLLER: logout] Request hit");
+    try {
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
+
+        console.log(" => [CONTROLLER: logout] Request ended successfully");
+        res.status(200).json({
+            status: "success",
+            message: "Logout successful"
+        });
+    } catch (error) {
+        console.error(" => [CONTROLLER ERROR: logout] Internal error:", error);
+        res.status(500).json({ status: "failure", message: "Internal server error" });
+    }
+};
