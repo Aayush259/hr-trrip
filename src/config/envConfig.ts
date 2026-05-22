@@ -27,6 +27,13 @@ const config = {
 
     jwt_access_secret: String(process.env.JWT_SECRET),
     jwt_refresh_secret: String(process.env.JWT_REFRESH_SECRET),
+
+    cloudinary_cloud_name: String(process.env.CLOUDINARY_CLOUD_NAME),
+    cloudinary_api_key: String(process.env.CLOUDINARY_API_KEY),
+    cloudinary_api_secret: String(process.env.CLOUDINARY_API_SECRET),
+    cloudinary_folder: String(process.env.CLOUDINARY_FOLDER),
+
+    gemini_api_key: String(process.env.GEMINI_API_KEY),
 }
 
 export default config;

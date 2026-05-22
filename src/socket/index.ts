@@ -22,6 +22,7 @@
  */
 
 import { Server, Socket } from "socket.io";
+import { setupBookingEvents } from "./bookingEvents.js";
 
 export interface SocketData {
     user?: {
@@ -31,13 +32,16 @@ export interface SocketData {
 
 export const setupSocketHandlers = (io: Server<any, any, any, SocketData>) => {
     io.on("connect", (socket: Socket<any, any, any, SocketData>) => {
-        const userId = socket.data.user?._id;
+        const userId = socket.data.user?._id?.toString();
         console.log(" => [SOCKET: index] User connected", socket.id, "User ID:", userId);
 
         // Join the socket to a room with their user ID to allow direct messages
         if (userId) {
             socket.join(userId);
         }
+
+        // Initialize specific event handlers
+        setupBookingEvents(io, socket);
 
         socket.on("disconnect", () => {
             console.log(" => [SOCKET: index] User disconnected", socket.id);
