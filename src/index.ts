@@ -8,6 +8,7 @@ import envConfig from "./config/envConfig.js";
 import { connectDB } from "./lib/db.js";
 import { socketAuthMiddleware } from "./middleware/socketAuthMiddleware.js";
 import userRoutes from "./routes/userRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 
 const app = express();
 const server = createServer(app);
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 io.use(socketAuthMiddleware);
 setupSocketHandlers(io);
