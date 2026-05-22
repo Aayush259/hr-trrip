@@ -4,11 +4,8 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Apply auth middleware to all booking routes
-router.use(authMiddleware);
-
 // Get a list of all travel bookings (metadata only)
-router.get("/", getUserBookings);
+router.get("/", authMiddleware, getUserBookings);
 
 // Get detailed extracted data for a specific booking
 router.get("/:id", getBookingDetails);

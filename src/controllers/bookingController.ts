@@ -32,14 +32,7 @@ export const getBookingDetails = async (req: AuthRequest, res: Response): Promis
     const bookingId = req.params.id;
     console.log(` => [CONTROLLER: getBookingDetails] Fetching details for booking ${bookingId}`);
     try {
-        const userId = req.user?._id;
-        if (!userId) {
-            res.status(401).json({ status: "failure", message: "Unauthorized" });
-            return;
-        }
-
-        // Querying with userId ensures users can only access their own documents
-        const booking = await TravelBooking.findOne({ _id: bookingId, userId });
+        const booking = await TravelBooking.findOne({ _id: bookingId });
 
         if (!booking) {
             console.log(` => [CONTROLLER: getBookingDetails] Booking ${bookingId} not found or access denied`);
