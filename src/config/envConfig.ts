@@ -18,6 +18,15 @@ dotenv.config();
 
 const config = {
     port: Number(process.env.PORT) || 3000,
+    frontend_url: String(process.env.FRONTEND_URL),
+
+    mongo_user: String(process.env.MONGO_USER),
+    mongo_password: String(process.env.MONGO_PASSWORD),
+    mongo_uri: String(process.env.MONGO_URI),
+    mongo_database: String(process.env.MONGO_DATABASE),
+
+    jwt_access_secret: String(process.env.JWT_SECRET),
+    jwt_refresh_secret: String(process.env.JWT_REFRESH_SECRET),
 }
 
 export default config;
